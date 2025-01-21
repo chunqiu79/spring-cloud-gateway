@@ -32,16 +32,33 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.DispatcherHandler;
 
 /**
- * AutoConfiguration for {@link ReactiveLoadBalancerClientFilter}.
+ * 负载均衡自动配置类
+ * 如：当前请求路由到order服务，但是order服务后端有3台机器，当前请求具体发送到那台机器呢？由负载均衡算法决定
  *
- * @author Spencer Gibb
- * @author Olga Maciaszek-Sharma
+ * 装配条件：
+ * 1.@ConditionalOnClass({ ReactiveLoadBalancer.class, LoadBalancerAutoConfiguration.class, DispatcherHandler.class })
+ * 表明ReactiveLoadBalancer、LoadBalancerAutoConfiguration、DispatcherHandler 3个类需要在类路径下才会生效
+ *
+ * 2.@AutoConfigureAfter(LoadBalancerAutoConfiguration.class)
+ * 表明需要在LoadBalancerAutoConfiguration之后装配
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ ReactiveLoadBalancer.class, LoadBalancerAutoConfiguration.class, DispatcherHandler.class })
 @AutoConfigureAfter(LoadBalancerAutoConfiguration.class)
 @EnableConfigurationProperties(GatewayLoadBalancerProperties.class)
 public class GatewayReactiveLoadBalancerClientAutoConfiguration {
+
+	/**
+	 * 装配条件：
+	 * 1.@ConditionalOnBean(LoadBalancerClientFactory.class)
+	 * 存在LoadBalancerClientFactory的bean
+	 *
+	 * 2.@ConditionalOnMissingBean(ReactiveLoadBalancerClientFilter.class)
+	 * 没有ReactiveLoadBalancerClientFilter的bean（避免重复创建）
+	 *
+	 * 3.@ConditionalOnEnabledGlobalFilter
+	 * // TODO: 2024/6/5 等有空再研究下
+	 */
 
 	@Bean
 	@ConditionalOnBean(LoadBalancerClientFactory.class)

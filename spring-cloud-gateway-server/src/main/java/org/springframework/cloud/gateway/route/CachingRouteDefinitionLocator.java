@@ -16,16 +16,15 @@
 
 package org.springframework.cloud.gateway.route;
 
+import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
+import org.springframework.context.ApplicationListener;
+import reactor.cache.CacheFlux;
+import reactor.core.publisher.Flux;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import reactor.cache.CacheFlux;
-import reactor.core.publisher.Flux;
-
-import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
-import org.springframework.context.ApplicationListener;
 
 /**
  * @author Spencer Gibb
@@ -38,6 +37,11 @@ public class CachingRouteDefinitionLocator implements RouteDefinitionLocator, Ap
 
 	private final Flux<RouteDefinition> routeDefinitions;
 
+	/**
+	 * 路由缓存
+	 * key：routeDefs
+	 * value：路由信息列表
+	 */
 	private final Map<String, List> cache = new ConcurrentHashMap<>();
 
 	public CachingRouteDefinitionLocator(RouteDefinitionLocator delegate) {

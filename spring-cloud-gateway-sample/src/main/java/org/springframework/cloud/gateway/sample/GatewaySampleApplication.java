@@ -16,11 +16,6 @@
 
 package org.springframework.cloud.gateway.sample;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -35,6 +30,10 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Spencer Gibb

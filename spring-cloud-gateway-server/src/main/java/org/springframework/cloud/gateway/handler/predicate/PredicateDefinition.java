@@ -16,15 +16,14 @@
 
 package org.springframework.cloud.gateway.handler.predicate;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.cloud.gateway.support.NameUtils;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.cloud.gateway.support.NameUtils;
-import org.springframework.validation.annotation.Validated;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
@@ -34,6 +33,10 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
 @Validated
 public class PredicateDefinition {
 
+	/**
+	 * 对应到 org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory 的实现类
+	 * 如：name=Query，那么就是对应QueryRoutePredicateFactory
+	 */
 	@NotNull
 	private String name;
 

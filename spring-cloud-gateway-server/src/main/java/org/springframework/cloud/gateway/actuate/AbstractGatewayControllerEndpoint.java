@@ -16,17 +16,8 @@
 
 package org.springframework.cloud.gateway.actuate;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -44,12 +35,16 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Spencer Gibb
@@ -132,6 +127,10 @@ public class AbstractGatewayControllerEndpoint implements ApplicationEventPublis
 	 * predicates:='["Host=**.apiaddrequestheader.org", "Path=/headers"]'
 	 * filters:='["AddRequestHeader=X-Request-ApiFoo, ApiBar"]'
 	 */
+
+	/**
+	 * 保存路由信息接口 - post请求
+	 */
 	@PostMapping("/routes/{id}")
 	@SuppressWarnings("unchecked")
 	public Mono<ResponseEntity<Object>> save(@PathVariable String id, @RequestBody RouteDefinition route) {
@@ -192,6 +191,9 @@ public class AbstractGatewayControllerEndpoint implements ApplicationEventPublis
 				.anyMatch(routePredicate -> predicateDefinition.getName().equals(routePredicate.name()));
 	}
 
+	/**
+	 * 删除路由信息接口 - delete请求
+	 */
 	@DeleteMapping("/routes/{id}")
 	public Mono<ResponseEntity<Object>> delete(@PathVariable String id) {
 		return this.routeDefinitionWriter.delete(Mono.just(id))

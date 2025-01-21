@@ -16,35 +16,49 @@
 
 package org.springframework.cloud.gateway.handler;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
-
 import org.springframework.cloud.gateway.handler.predicate.GatewayPredicate;
 import org.springframework.cloud.gateway.support.HasConfig;
 import org.springframework.cloud.gateway.support.Visitor;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author Ben Hale
  */
 public interface AsyncPredicate<T> extends Function<T, Publisher<Boolean>>, HasConfig {
 
+	/**
+	 * and
+	 * 需要2个Predicate都满足
+	 */
 	default AsyncPredicate<T> and(AsyncPredicate<? super T> other) {
 		return new AndAsyncPredicate<>(this, other);
 	}
 
+	/**
+	 * negate
+	 * 对 Predicate 匹配结果取反
+	 */
 	default AsyncPredicate<T> negate() {
 		return new NegateAsyncPredicate<>(this);
 	}
 
+	/**
+	 *
+	 */
 	default AsyncPredicate<T> not(AsyncPredicate<? super T> other) {
 		return new NegateAsyncPredicate<>(other);
 	}
 
+	/**
+	 * or
+	 * 2个Predicate满足1个即可
+	 */
 	default AsyncPredicate<T> or(AsyncPredicate<? super T> other) {
 		return new OrAsyncPredicate<>(this, other);
 	}

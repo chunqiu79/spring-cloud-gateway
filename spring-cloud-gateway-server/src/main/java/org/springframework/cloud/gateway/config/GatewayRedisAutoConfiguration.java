@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.gateway.config;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -45,6 +43,22 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.web.reactive.DispatcherHandler;
 
+import java.util.List;
+
+/**
+ * 装配条件：
+ * 1.@AutoConfigureAfter(RedisReactiveAutoConfiguration.class)
+ * 先装配RedisReactiveAutoConfiguration
+ *
+ * 2.@ConditionalOnBean(ReactiveRedisTemplate.class)
+ * 必须存在ReactiveRedisTemplate的bean
+ *
+ * 3.@ConditionalOnClass({ RedisTemplate.class, DispatcherHandler.class })
+ * 运行必须存在RedisTemplate和DispatcherHandler类
+ *
+ * 4.@ConditionalOnProperty(name = "spring.cloud.gateway.redis.enabled", matchIfMissing = true)
+ * spring.cloud.gateway.redis.enabled必须为true，当然如果没有配置也是认为true
+ */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(RedisReactiveAutoConfiguration.class)
 @AutoConfigureBefore(GatewayAutoConfiguration.class)
@@ -63,6 +77,9 @@ class GatewayRedisAutoConfiguration {
 		return redisScript;
 	}
 
+	/**
+	 *
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public RedisRateLimiter redisRateLimiter(ReactiveStringRedisTemplate redisTemplate,

@@ -16,15 +16,15 @@
 
 package org.springframework.cloud.gateway.handler.predicate;
 
+import org.springframework.web.server.ServerWebExchange;
+
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.springframework.web.server.ServerWebExchange;
-
 /**
- * @author Spencer Gibb
+ * 请求时间满足在匹配时间之 前
  */
 public class BeforeRoutePredicateFactory extends AbstractRoutePredicateFactory<BeforeRoutePredicateFactory.Config> {
 
@@ -48,6 +48,7 @@ public class BeforeRoutePredicateFactory extends AbstractRoutePredicateFactory<B
 			@Override
 			public boolean test(ServerWebExchange serverWebExchange) {
 				final ZonedDateTime now = ZonedDateTime.now();
+				// 当前时间在配置的时间之前，则返回true
 				return now.isBefore(config.getDatetime());
 			}
 

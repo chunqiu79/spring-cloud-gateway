@@ -16,17 +16,16 @@
 
 package org.springframework.cloud.gateway.handler.predicate;
 
+import org.springframework.web.server.ServerWebExchange;
+
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.validation.constraints.NotNull;
-
-import org.springframework.web.server.ServerWebExchange;
-
 /**
- * @author Spencer Gibb
+ * 请求时间满足在匹配时间之 后
  */
 public class AfterRoutePredicateFactory extends AbstractRoutePredicateFactory<AfterRoutePredicateFactory.Config> {
 
@@ -50,6 +49,9 @@ public class AfterRoutePredicateFactory extends AbstractRoutePredicateFactory<Af
 			@Override
 			public boolean test(ServerWebExchange serverWebExchange) {
 				final ZonedDateTime now = ZonedDateTime.now();
+				// 当前时间在配置的datetime之后，则返回true
+				// 当然这里有个很明显的地方在于，这里的datetime是ZonedDateTime，不符合也不利于我们日常开发理解
+				// 所以可以自定义，将它的时间改成字符串或者其它格式
 				return now.isAfter(config.getDatetime());
 			}
 

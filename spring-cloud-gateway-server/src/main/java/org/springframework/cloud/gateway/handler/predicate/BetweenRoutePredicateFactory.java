@@ -16,19 +16,18 @@
 
 package org.springframework.cloud.gateway.handler.predicate;
 
+import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ServerWebExchange;
+
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.validation.constraints.NotNull;
-
-import org.springframework.util.Assert;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.server.ServerWebExchange;
-
 /**
- * @author Spencer Gibb
+ * 请求时间满足在配置时间之 间
  */
 public class BetweenRoutePredicateFactory extends AbstractRoutePredicateFactory<BetweenRoutePredicateFactory.Config> {
 
@@ -60,6 +59,7 @@ public class BetweenRoutePredicateFactory extends AbstractRoutePredicateFactory<
 			@Override
 			public boolean test(ServerWebExchange serverWebExchange) {
 				final ZonedDateTime now = ZonedDateTime.now();
+				// 当前时间大于datetime1，小于datetime2，即：datetime1 < now < datetime2
 				return now.isAfter(config.getDatetime1()) && now.isBefore(config.getDatetime2());
 			}
 

@@ -16,14 +16,13 @@
 
 package org.springframework.cloud.gateway.route;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import org.springframework.cloud.gateway.support.NotFoundException;
+import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.cloud.gateway.support.NotFoundException;
-import org.springframework.util.ObjectUtils;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static java.util.Collections.synchronizedMap;
 
@@ -32,7 +31,11 @@ import static java.util.Collections.synchronizedMap;
  */
 public class InMemoryRouteDefinitionRepository implements RouteDefinitionRepository {
 
-	private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<String, RouteDefinition>());
+	/**
+	 * key：路由定义id
+	 * value：路由定义
+	 */
+	private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<>());
 
 	@Override
 	public Mono<Void> save(Mono<RouteDefinition> route) {

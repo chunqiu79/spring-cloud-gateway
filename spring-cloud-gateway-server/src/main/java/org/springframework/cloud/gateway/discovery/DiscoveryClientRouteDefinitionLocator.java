@@ -16,16 +16,8 @@
 
 package org.springframework.cloud.gateway.discovery;
 
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Flux;
-
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
@@ -39,6 +31,13 @@ import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Flux;
+
+import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * TODO: change to RouteLocator? use java dsl
@@ -60,6 +59,7 @@ public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLoc
 	public DiscoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient,
 			DiscoveryLocatorProperties properties) {
 		this(discoveryClient.getClass().getSimpleName(), properties);
+		// 获取注册中心的服务列表
 		serviceInstances = discoveryClient.getServices()
 				.flatMap(service -> discoveryClient.getInstances(service).collectList());
 	}
@@ -70,6 +70,7 @@ public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLoc
 			routeIdPrefix = properties.getRouteIdPrefix();
 		}
 		else {
+			// discoveryClient.getClass().getSimpleName() + "_"
 			routeIdPrefix = discoveryClientName + "_";
 		}
 		evalCtxt = SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().build();
@@ -79,7 +80,9 @@ public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLoc
 	public Flux<RouteDefinition> getRouteDefinitions() {
 
 		SpelExpressionParser parser = new SpelExpressionParser();
+		// properties.getIncludeExpression() ：默认是true
 		Expression includeExpr = parser.parseExpression(properties.getIncludeExpression());
+		// properties.getUrlExpression()：默认是'lb://'+serviceId
 		Expression urlExpr = parser.parseExpression(properties.getUrlExpression());
 
 		Predicate<ServiceInstance> includePredicate;

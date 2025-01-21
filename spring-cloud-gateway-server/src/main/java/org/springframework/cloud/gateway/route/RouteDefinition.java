@@ -16,21 +16,16 @@
 
 package org.springframework.cloud.gateway.route;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.cloud.gateway.filter.FilterDefinition;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.cloud.gateway.filter.FilterDefinition;
-import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
-import org.springframework.validation.annotation.Validated;
+import java.net.URI;
+import java.util.*;
 
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
@@ -40,20 +35,35 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
 @Validated
 public class RouteDefinition {
 
+	/**
+	 * 标识符
+	 */
 	private String id;
 
+	/**
+	 * 请求通过 predicates 判断是否匹配
+	 */
 	@NotEmpty
 	@Valid
 	private List<PredicateDefinition> predicates = new ArrayList<>();
 
+	/**
+	 * 过滤器
+	 */
 	@Valid
 	private List<FilterDefinition> filters = new ArrayList<>();
 
+	/**
+	 * 目标uri
+	 */
 	@NotNull
 	private URI uri;
 
 	private Map<String, Object> metadata = new HashMap<>();
 
+	/**
+	 * 当请求匹配到多个路由时，使用顺序小的
+	 */
 	private int order = 0;
 
 	public RouteDefinition() {
